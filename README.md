@@ -8,10 +8,9 @@ The lab was designed to simulate a small enterprise environment and includes Act
 
 ---
 
-## Architecture
+## Architecture Diagram
+<img width="1536" height="1024" alt="ActiveDirectoryLabDiagram" src="https://github.com/user-attachments/assets/420162ac-1368-43e4-8853-9f0810ee3a61" />
 
-![Architecture Diagram](<img width="1536" height="1024" alt="ActiveDirectoryLabDiagram" src="https://github.com/user-attachments/assets/420162ac-1368-43e4-8853-9f0810ee3a61" />
-)
 
 ---
 
@@ -99,7 +98,8 @@ Windows 11 Client
 
 ### Server Manager
 
-![Server Manager](screenshots/01-server-manager.png)
+<img width="1728" height="1117" alt="Screenshot 2026-05-29 at 6 04 53 PM" src="https://github.com/user-attachments/assets/8f7ce295-4c79-47d4-9d8d-179340d0394f" />
+
 
 Displays installed server roles including AD DS, DNS, DHCP, and Remote Access.
 
@@ -107,7 +107,8 @@ Displays installed server roles including AD DS, DNS, DHCP, and Remote Access.
 
 ### Active Directory Users and Computers
 
-![ADUC](screenshots/02-active-directory-users-and-computers.png)
+<img width="1728" height="1117" alt="Screenshot 2026-05-29 at 6 10 44 PM" src="https://github.com/user-attachments/assets/bfccbb10-f394-40c0-9d99-720f6f5843ac" />
+
 
 Demonstrates Active Directory deployment and organizational structure.
 
@@ -115,7 +116,8 @@ Demonstrates Active Directory deployment and organizational structure.
 
 ### DNS Manager
 
-![DNS Manager](screenshots/03-dns-manager.png)
+<img width="1728" height="1117" alt="Screenshot 2026-05-29 at 6 14 19 PM" src="https://github.com/user-attachments/assets/894a99d3-491c-41e5-9f89-7f480857274b" />
+
 
 Shows Forward Lookup Zones and domain name resolution configuration.
 
@@ -123,7 +125,8 @@ Shows Forward Lookup Zones and domain name resolution configuration.
 
 ### DHCP Scope Configuration
 
-![DHCP](screenshots/04-dhcp-scope.png)
+<img width="1728" height="1117" alt="Screenshot 2026-05-29 at 6 18 51 PM" src="https://github.com/user-attachments/assets/5f44c19f-db96-4e0c-9ae0-66ab28fa9bb8" />
+
 
 Displays DHCP scope settings and address allocation.
 
@@ -131,7 +134,8 @@ Displays DHCP scope settings and address allocation.
 
 ### RRAS/NAT Configuration
 
-![RRAS](screenshots/05-rras-nat.png)
+<img width="1728" height="1117" alt="Screenshot 2026-05-29 at 6 32 29 PM" src="https://github.com/user-attachments/assets/a8b9fa42-7afa-4518-9bbf-57a0f81e60c9" />
+
 
 Shows NAT configuration providing internet access to internal clients.
 
@@ -139,7 +143,8 @@ Shows NAT configuration providing internet access to internal clients.
 
 ### PowerShell User Provisioning
 
-![PowerShell](screenshots/06-powershell-user-creation.png)
+<img width="1728" height="1117" alt="Screenshot 2026-05-29 at 6 41 18 PM" src="https://github.com/user-attachments/assets/edf226db-9718-4a5b-a2b1-ef43c6999149" />
+
 
 Demonstrates automation using PowerShell for Active Directory administration.
 
@@ -147,15 +152,17 @@ Demonstrates automation using PowerShell for Active Directory administration.
 
 ### Group Policy Management
 
-![GPO](screenshots/07-group-policy-management.png)
+<img width="1728" height="1117" alt="Screenshot 2026-05-29 at 7 58 52 PM" src="https://github.com/user-attachments/assets/1f11d9b3-ab2b-4b35-9fd8-2de3c53527b3" />
 
-Shows Group Policy administration within the domain.
+
+Implemented a domain-wide account lockout policy to help mitigate brute-force and password spraying attacks.
 
 ---
 
 ### Windows 11 Domain Join
 
-![Domain Join](screenshots/08-windows11-domain-join.png)
+<img width="1728" height="1117" alt="Screenshot 2026-05-29 at 6 47 55 PM" src="https://github.com/user-attachments/assets/d910d66e-e7d7-4849-b485-24be7c8c4667" />
+
 
 Demonstrates successful integration of a Windows 11 client into the Active Directory domain.
 
@@ -163,7 +170,8 @@ Demonstrates successful integration of a Windows 11 client into the Active Direc
 
 ### Client Network Configuration
 
-![IPConfig](screenshots/09-ipconfig-all.png)
+<img width="1728" height="1117" alt="Screenshot 2026-05-29 at 6 51 20 PM" src="https://github.com/user-attachments/assets/bf748938-5f92-4a63-842a-2fd5cfb23468" />
+
 
 Displays DHCP-assigned addressing and DNS configuration.
 
@@ -171,27 +179,13 @@ Displays DHCP-assigned addressing and DNS configuration.
 
 ### Connectivity Testing
 
-![Ping Test](screenshots/10-ping-test.png)
+<img width="1728" height="1117" alt="Screenshot 2026-05-29 at 6 52 29 PM" src="https://github.com/user-attachments/assets/542cf5d5-2fc7-414b-a840-26d618a925f2" />
+
 
 Verifies internal communication, DNS functionality, and internet connectivity through RRAS/NAT.
 
 ---
 
-## PowerShell Automation
-
-This lab includes PowerShell-based administrative automation for Active Directory management.
-
-Example capabilities:
-
-* Bulk user creation
-* User account management
-* Organizational Unit (OU) creation
-* Password administration
-* User provisioning automation
-
-Scripts are stored in the `/scripts` directory.
-
----
 
 ## Skills Demonstrated
 
@@ -283,36 +277,6 @@ Planned enhancements include:
 * Vulnerability Management using Nessus
 * Microsoft Defender administration
 
----
-
-## Repository Structure
-
-```text
-Active-Directory-Home-Lab/
-│
-├── README.md
-│
-├── diagrams/
-│   └── ad-home-lab-architecture.png
-│
-├── screenshots/
-│   ├── 01-server-manager.png
-│   ├── 02-active-directory-users-and-computers.png
-│   ├── 03-dns-manager.png
-│   ├── 04-dhcp-scope.png
-│   ├── 05-rras-nat.png
-│   ├── 06-powershell-user-creation.png
-│   ├── 07-group-policy-management.png
-│   ├── 08-windows11-domain-join.png
-│   ├── 09-ipconfig-all.png
-│   └── 10-ping-test.png
-│
-├── scripts/
-│   └── create-users.ps1
-│
-└── docs/
-    └── troubleshooting.md
-```
 
 ---
 
