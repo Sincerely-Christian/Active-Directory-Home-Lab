@@ -2,133 +2,260 @@
 
 ## Overview
 
-This project involved deploying a Windows Active Directory environment using Windows Server 2025 ARM and Windows 11 virtual machines hosted on Parallels Desktop for macOS.
-
-While building the environment, several technical challenges were encountered involving operating system deployment, networking, Active Directory services, and routing configuration. Resolving these issues provided valuable hands-on experience with enterprise Windows infrastructure.
+While building this Active Directory environment, several issues were encountered that required investigation, testing, and remediation. The purpose of this document is to record those challenges, their root causes, and the solutions implemented.
 
 ---
 
-## Challenge 1: Obtaining a Compatible Windows Server 2025 ARM Installation Image
+# Issue 1: Adapting a VirtualBox Lab to Parallels Desktop
 
-### Problem
+## Problem
 
-The original lab environment was designed around Windows Server 2019 running on x86 hardware. Because the lab was built on an Apple Silicon Mac using Parallels Desktop, a compatible ARM version of Windows Server was required.
+The original lab design was based on Oracle VirtualBox networking. This project was implemented using Parallels Desktop on macOS, which uses different networking terminology and adapter configurations.
 
-### Investigation
+## Impact
 
-Microsoft does not currently provide a standard Windows Server ARM ISO through the same channels used for traditional x86 deployments. Research was conducted to identify a compatible ARM-based installation source that could be deployed within Parallels Desktop.
+Several tutorial steps could not be followed directly because VirtualBox Internal Networks and Host-Only Networks behave differently from Parallels networking options.
 
-### Resolution
+## Resolution
 
-A Windows Server 2025 ARM installation image was successfully obtained and deployed. This allowed the Domain Controller to run natively on Apple Silicon while maintaining compatibility with Active Directory, DNS, DHCP, RRAS, and Group Policy services.
+A two-network design was implemented:
 
-### Lesson Learned
+### External Adapter
 
-Modern virtualization platforms increasingly require consideration of processor architecture compatibility. Understanding the differences between ARM and x86 deployments is becoming an important infrastructure skill.
+Used for internet access.
 
----
+```text
+Network Type: Shared / NAT
+Address Assignment: DHCP
+```
 
-## Challenge 2: Internal Network Adapter Configuration
+### Internal Adapter
 
-### Problem
+Used for Active Directory communication.
 
-The Domain Controller required both an external interface for internet access and an internal interface for domain services. Initial network configuration issues prevented proper communication between services.
+```text
+Network Type: Host-Only / Internal Network
+Network: 172.16.0.0/24
+```
 
-### Investigation
-
-Network settings were reviewed using:
-
-* ipconfig /all
-* Network Connections
-* DNS Manager
-* DHCP Manager
-
-The issue was traced to internal adapter configuration and addressing inconsistencies.
-
-### Resolution
-
-The internal adapter was configured with a static address:
-
-* IP Address: 172.16.0.1
-* Subnet Mask: 255.255.255.0
-
-This provided a stable foundation for Active Directory, DNS, and DHCP services.
-
-### Lesson Learned
-
-Active Directory environments depend heavily on proper network planning and static infrastructure addressing.
+This provided separation between the internal domain environment and the external internet connection.
 
 ---
 
-## Challenge 3: DNS Validation During Active Directory Deployment
+# Issue 2: DNS Validation During AD DS Deployment
 
-### Problem
+## Problem
 
-DNS validation errors occurred during the Domain Controller promotion process.
+During Active Directory Domain Services installation, DNS validation warnings and configuration errors were encountered.
 
-### Investigation
+## Impact
 
-DNS configuration was reviewed to verify:
+DNS is a critical dependency for Active Directory. Incorrect DNS configuration can prevent domain services from functioning properly.
 
-* DNS role installation
-* Forward Lookup Zones
-* Domain registration
-* Adapter DNS settings
+## Investigation
 
-### Resolution
+The server's internal adapter configuration and DNS settings were reviewed.
 
-DNS services were configured and validated prior to completing Active Directory promotion. After correction, domain records registered successfully and Active Directory deployment completed without further issues.
+The following were verified:
 
-### Lesson Learned
+* Static IP configuration
+* DNS service installation
+* Forward Lookup Zone creation
+* Domain name resolution
 
-DNS is a foundational dependency for Active Directory. Proper DNS configuration should always be verified before troubleshooting higher-level directory services.
+## Resolution
+
+The Domain Controller was configured with a static internal address and DNS services were verified before completing Active Directory deployment.
+
+Result:
+
+```text
+Active Directory installation completed successfully.
+Domain name resolution functioned correctly.
+```
 
 ---
 
-## Challenge 4: RRAS and NAT Configuration
+# Issue 3: Internal Adapter Addressing Problems
 
-### Problem
+## Problem
 
-The Windows 11 client successfully joined the domain but initially lacked internet access.
+The internal network adapter experienced addressing inconsistencies during initial configuration.
 
-### Investigation
+## Impact
 
-Connectivity testing was performed using:
+Clients could not consistently communicate with the Domain Controller.
 
-* ping
-* ipconfig
-* nslookup
+## Investigation
 
-RRAS configuration was reviewed to verify public and private interface assignments.
+Adapter settings were reviewed using:
 
-### Resolution
+```powershell
+ipconfig /all
+```
+
+Network assignments and static configuration were validated.
+
+## Resolution
+
+The internal adapter was assigned:
+
+```text
+IP Address: 172.16.0.1
+Subnet Mask: 255.255.255.0
+Gateway: None
+```
+
+The adapter was isolated from internet routing and dedicated exclusively to internal Active Directory services.
+
+---
+
+# Issue 4: RRAS and NAT Configuration
+
+## Problem
+
+Domain clients initially received addresses but were unable to access external internet resources.
+
+## Impact
+
+Clients could authenticate to the domain but could not reach external websites.
+
+## Investigation
+
+Routing and Remote Access Services configuration was reviewed.
+
+The relationship between:
+
+* Internal Interface
+* External Interface
+* NAT Configuration
+
+was verified.
+
+## Resolution
 
 RRAS was configured with:
 
-* External NIC designated as the public interface
-* Internal NIC designated as the private interface
-* NAT enabled on the public interface
+```text
+External Interface = Public
+Internal Interface = Private
+NAT Enabled
+```
 
-After configuration, domain clients successfully accessed external resources through the Domain Controller.
+Result:
 
-### Lesson Learned
-
-Routing services must be configured carefully in multi-homed server environments. Understanding traffic flow between public and private interfaces is critical for successful network design.
+```text
+Domain clients successfully accessed internet resources.
+Internal DNS resolution continued functioning correctly.
+```
 
 ---
 
-## Key Takeaways
+# Issue 5: DHCP Scope Configuration
 
-This project provided practical experience in:
+## Problem
 
-* Active Directory Administration
-* DNS Infrastructure
-* DHCP Management
-* RRAS/NAT Configuration
-* Group Policy Administration
-* Windows Server Troubleshooting
-* Network Segmentation
+Proper DHCP configuration was required to automatically provision domain clients.
+
+## Resolution
+
+A DHCP scope was created using:
+
+```text
+Network: 172.16.0.0/24
+Range: 172.16.0.100 - 172.16.0.200
+Gateway: 172.16.0.1
+DNS Server: 172.16.0.1
+```
+
+Result:
+
+```text
+Clients automatically received valid network configuration.
+```
+
+---
+
+# Issue 6: Windows Server 2025 ARM Deployment
+
+## Problem
+
+Most publicly available Active Directory tutorials use:
+
+* Windows Server 2019
+* Windows Server 2022
+* x86 Virtual Machines
+
+This project was completed using:
+
+```text
+Windows Server 2025 ARM
+Parallels Desktop
+macOS Host
+```
+
+## Impact
+
+Documentation and screenshots often differed from the actual environment.
+
+## Resolution
+
+Core Active Directory concepts remained unchanged.
+
+Services successfully deployed:
+
+* Active Directory Domain Services
+* DNS
+* DHCP
+* RRAS/NAT
+* Group Policy
 * PowerShell Administration
-* Virtualized Infrastructure Deployment
 
-The project reinforced the importance of structured troubleshooting, service dependency awareness, and network design when deploying enterprise Windows infrastructure.
+This demonstrated the ability to adapt enterprise infrastructure concepts to newer platforms rather than relying on a tutorial's exact configuration.
+
+---
+
+# Security Controls Implemented
+
+The following security-related configurations were implemented during the project:
+
+## Account Lockout Policy
+
+Configured through Group Policy Management.
+
+```text
+Account Lockout Threshold: 5 invalid logon attempts
+Lockout Duration: 15 minutes
+Reset Counter After: 10 minutes
+```
+
+Purpose:
+
+* Mitigate brute-force attacks
+* Reduce password spraying risk
+* Demonstrate domain-level security policy management
+
+---
+
+# Key Lessons Learned
+
+* Active Directory depends heavily on proper DNS configuration.
+* Network troubleshooting is often the most time-consuming portion of deployment.
+* Virtualization platforms implement networking differently.
+* RRAS/NAT configuration requires careful interface assignment.
+* Infrastructure deployment requires adaptation when documentation and environments differ.
+* Troubleshooting and validation are as important as installation itself.
+
+---
+
+# Final Outcome
+
+The completed environment successfully provides:
+
+* Active Directory Domain Services
+* DNS
+* DHCP
+* Group Policy Management
+* PowerShell Administration
+* RRAS/NAT Routing
+* Windows 11 Domain Client Integration
