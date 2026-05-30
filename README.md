@@ -226,40 +226,18 @@ Verifies internal communication, DNS functionality, and internet connectivity th
 
 ---
 
-## Challenges and Troubleshooting
+Challenges and Troubleshooting
+This project required adapting a VirtualBox-based Active Directory lab to a modern ARM-based environment using Parallels Desktop on macOS. During deployment, several infrastructure and networking issues were encountered and resolved, including:
+Internal and external virtual network configuration
+DNS validation and Active Directory deployment issues
+Static IP addressing and internal adapter configuration
+RRAS/NAT routing configuration
+DHCP scope deployment and client connectivity
+Windows Server 2025 ARM compatibility considerations
+Detailed troubleshooting notes, root-cause analysis, and resolutions are documented in:
 
-Several technical challenges were encountered during the deployment process:
+[docs/troubleshooting.md](https://github.com/Sincerely-Christian/Active-Directory-Home-Lab/blob/main/docs/troubleshooting.md)
 
-### Networking Configuration
-
-* Configured internal and external virtual network adapters using Parallels Desktop.
-* Adapted networking concepts from VirtualBox-based tutorials to the Parallels environment.
-
-### DNS Validation Issues
-
-* Resolved DNS validation errors encountered during Active Directory Domain Services deployment.
-* Verified proper DNS registration and domain resolution.
-
-### Internal Adapter Configuration
-
-* Diagnosed and corrected internal network adapter addressing issues.
-* Configured a static IP address for the Domain Controller.
-
-### RRAS/NAT Deployment
-
-* Configured Routing and Remote Access Services (RRAS).
-* Implemented NAT to provide internet access to internal domain clients.
-
-### Windows Server 2025 ARM Adaptation
-
-* Successfully completed the lab using Windows Server 2025 ARM instead of the original Windows Server 2019 environment.
-* Adjusted configurations where necessary to accommodate platform differences.
-
-Additional troubleshooting documentation can be found in:
-
-```text
-/docs/troubleshooting.md
-```
 
 ---
 
